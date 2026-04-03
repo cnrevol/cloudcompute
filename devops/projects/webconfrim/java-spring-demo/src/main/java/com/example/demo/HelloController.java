@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
     @GetMapping("/")
-    public String hello() {
-        return "Hello Docker DevOps";
+    public String hello22() {
+        return "What fuck Docker DevOps";
     }
 
     @GetMapping("/hi")
