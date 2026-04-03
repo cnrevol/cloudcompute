@@ -35,5 +35,5 @@ jobs:
           cd /home/ec2-user/app
           docker stop spring-demo || true
           docker rm spring-demo || true
-          docker build -t spring-demo devops/projects/webconfrim/java-spring-demo
+          docker build -t spring-demo /home/ec2-user/app/devops/projects/webconfrim/java-spring-demo
           docker run -d -p 8080:8080 --name spring-demo spring-demo
