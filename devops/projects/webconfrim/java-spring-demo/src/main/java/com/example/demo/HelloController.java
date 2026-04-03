@@ -9,4 +9,9 @@ public class HelloController {
     public String hello() {
         return "Hello Docker DevOps";
     }
+
+    @GetMapping("/hi")
+    public String hello2() {
+        return "Hi Bro, come on. ";
+    }
 }
