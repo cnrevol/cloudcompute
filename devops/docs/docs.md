@@ -46,6 +46,9 @@ docker exec -it 容器ID /bin/bash
 docker port 容器ID
 
 docker stop 容器ID
+
+docker rm -f
+
 ```
 
 
