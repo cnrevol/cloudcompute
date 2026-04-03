@@ -45,6 +45,7 @@ docker exec -it 容器ID /bin/bash
 # 查看端口映射
 docker port 容器ID
 
+docker stop 容器ID
 ```
 
 
