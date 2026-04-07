@@ -1,0 +1,50 @@
+name: Deploy Spring Boot to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Build Jar
+      working-directory: devops/projects/webconfrim/java-spring-demo
+      run: mvn clean package
+
+    - name: Copy Jar to EC2
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        source: "devops/projects/webconfrim/java-spring-demo/target/*.jar,devops/projects/webconfrim/java-spring-demo/Dockerfile"
+        target: "/home/ec2-user/app/java-spring-demo"
+
+    - name: Deploy on EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          set -e
+          cd /home/ec2-user/app/java-spring-demo
+          mkdir -p target
+          cp devops/projects/webconfrim/java-spring-demo/target/*.jar target/
+          cp devops/projects/webconfrim/java-spring-demo/Dockerfile .
+
+          # 删除旧容器
+          docker rm -f spring-demo || true
+          
+          docker rmi spring-demo || true
+
+          # 构建镜像，禁用缓存确保使用最新 Jar
+          docker build --no-cache -t spring-demo .
+          
+          # 启动新容器
+          docker run -d -p 8080:8080 --name spring-demo spring-demo
